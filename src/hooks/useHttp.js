@@ -23,7 +23,8 @@ export default function useHttp(url, config, initialData) {
     async function sendRequest(data) {
       setIsLoading(true);
       try {
-        const resData = await sendHttpRequest(url, config);
+        /*therefore by adjusting the body inside the config sendRequest can now be used such that the data is only passed at the point of time where we ready to send the request*/
+        const resData = await sendHttpRequest(url, { ...config, body: data });
         setData(resData);
       } catch (error) {
         setError(error.message || "Something went wrong!");
@@ -33,6 +34,7 @@ export default function useHttp(url, config, initialData) {
     [url, config]
   );
 
+  /* check for consitions that config.method is not defined or method given is equal to  GET then call this send request method. otherwise not,*/
   useEffect(() => {
     if ((config && (config.method === "GET" || !config.method)) || !config) {
       sendRequest();
